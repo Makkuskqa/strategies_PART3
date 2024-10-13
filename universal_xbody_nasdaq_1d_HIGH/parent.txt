@@ -1,0 +1,160 @@
+Universal XBody Strategy on Nasdaq(1Day)
+//-------------------------------------------------------------------------
+defparam cumulateorders=false
+ 
+//------------------ SYSTEM VARIABLES---------------------------------------
+//DAX40 Values:      -------------------------------------------- Ottimization info
+period=878// Optimize best value for each Symbol, range=1-1000, with step=1
+mode=1// Optimize the best trading mode , range=1-4, with step=1
+invertsignal=1// 1=positive signal, -1=negative signal, range=-1/1, with step=2
+//***********************************************************************************************
+//------------------ SYSTEM FILTER---------------------------------------
+filter1=41// to set after the variable optimization, range=1-100, with step=1
+filter2=0// to set after the variable optimization, range=1-100, with step=1
+//------------------ INDICATOR ---------------------------------------
+ 
+body=close-open
+var=(body-body[1])
+sumvar=summation[period](var)
+if sumvar>filter1*pipsize then
+green=(sumvar)
+endif
+if sumvar<-filter2*pipsize then
+red=(sumvar)
+endif
+ 
+if mode=1 then
+c1=red<red[1]
+c2=green>green[1]
+endif
+if mode=2 then
+c1=red>red[1]
+c2=green<green[1]
+endif
+if mode=3 then
+c1=red<red[1]
+c2=green<green[1]
+endif
+if mode=4 then
+c1=red>red[1]
+c2=green>green[1]
+endif
+if c1 then
+signal=1*invertsignal
+elsif c2  then
+signal=-1*invertsignal
+endif
+// Conditions for entering long positions and exit short positions
+IF signal>0  then
+BUY n contract AT market
+ENDIF
+// Conditions for entering short positions and exit long positions
+IF signal<0  THEN
+SELLSHORT n CONTRACTs AT market
+ENDIF
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+//-------------------------------------------------------------------------
+defparam cumulateorders=false
+ 
+//------------------ SYSTEM VARIABLES---------------------------------------
+//DAX40 Values:      -------------------------------------------- Ottimization info
+period=878// Optimize best value for each Symbol, range=1-1000, with step=1
+mode=1// Optimize the best trading mode , range=1-4, with step=1
+invertsignal=1// 1=positive signal, -1=negative signal, range=-1/1, with step=2
+//***********************************************************************************************
+//------------------ SYSTEM FILTER---------------------------------------
+filter1=41// to set after the variable optimization, range=1-100, with step=1
+filter2=0// to set after the variable optimization, range=1-100, with step=1
+//------------------ INDICATOR ---------------------------------------
+ 
+body=close-open
+var=(body-body[1])
+sumvar=summation[period](var)
+if sumvar>filter1*pipsize then
+green=(sumvar)
+endif
+if sumvar<-filter2*pipsize then
+red=(sumvar)
+endif
+ 
+if mode=1 then
+c1=red<red[1]
+c2=green>green[1]
+endif
+if mode=2 then
+c1=red>red[1]
+c2=green<green[1]
+endif
+if mode=3 then
+c1=red<red[1]
+c2=green<green[1]
+endif
+if mode=4 then
+c1=red>red[1]
+c2=green>green[1]
+endif
+if c1 then
+signal=1*invertsignal
+elsif c2  then
+signal=-1*invertsignal
+endif
+// Conditions for entering long positions and exit short positions
+IF signal>0  then
+BUY n contract AT market
+ENDIF
+// Conditions for entering short positions and exit long positions
+IF signal<0  THEN
+SELLSHORT n CONTRACTs AT market
+ENDIF

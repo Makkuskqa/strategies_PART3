@@ -1,0 +1,55 @@
+//@version=5
+strategy("Custom Trading System", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+// Define system variables
+period = input.int(878, title="Period", minval=1, maxval=1000)  // Optimized period for summation
+mode = input.int(1, title="Mode", minval=1, maxval=4)  // Optimized trading mode
+invertSignal = input.int(1, title="Invert Signal", minval=-1, maxval=1)  // Signal inversion: 1 or -1
+
+// System filters
+filter1 = input.int(41, title="Filter 1", minval=1, maxval=100)
+filter2 = input.int(0, title="Filter 2", minval=0, maxval=100)
+
+// Indicator calculations
+body = close - open
+bodyVar = body - body[1]  // Renamed var to bodyVar
+sumVar = ta.sma(bodyVar, period)  // Summation of bodyVar over 'period'
+
+var float green = na
+var float red = na
+
+if sumVar > filter1 * syminfo.mintick
+    green := sumVar
+if sumVar < -filter2 * syminfo.mintick
+    red := sumVar
+
+// Trading mode conditions
+var bool c1 = na
+var bool c2 = na
+
+if mode == 1
+    c1 := red < red[1]
+    c2 := green > green[1]
+if mode == 2
+    c1 := red > red[1]
+    c2 := green < green[1]
+if mode == 3
+    c1 := red < red[1]
+    c2 := green < green[1]
+if mode == 4
+    c1 := red > red[1]
+    c2 := green > green[1]
+
+// Signal generation
+var float signal = na
+if c1
+    signal := 1 * invertSignal
+if c2
+    signal := -1 * invertSignal
+
+// Trading logic
+if (signal > 0)
+    strategy.entry("Long", strategy.long)
+
+if (signal < 0)
+    strategy.entry("Short", strategy.short)

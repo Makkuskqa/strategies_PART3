@@ -1,0 +1,37 @@
+//@version=5
+strategy("1% per week", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+// Define the parameters
+cumulateOrders = input(false, title="Cumulate Orders")
+timezone = "Europe/Berlin"
+
+// Time settings
+startTime = timestamp("GMT+1", year, month, dayofmonth, 15, 30)
+endTime = timestamp("GMT+1", year, month, dayofmonth, 21, 30)
+dayOfWeek = dayofweek
+
+var float Kauf = na
+var float AnpassungTP = na
+
+// Define the strategy logic
+if (dayOfWeek == dayofweek.monday and time == startTime)
+    Kauf := close - (close * 0.01)
+    AnpassungTP := close - (close * 0.015)
+    strategy.entry("Buy", strategy.long, limit=Kauf)
+    strategy.exit("Take Profit", "Buy", limit=Kauf * 1.01)
+    strategy.exit("Stop Loss", "Buy", stop=close * 0.95)
+
+timec1 = (dayOfWeek == dayofweek.monday and time >= startTime) or (dayOfWeek > dayofweek.monday)
+timec2 = (dayOfWeek < dayofweek.tuesday) or (dayOfWeek == dayofweek.tuesday and time <= endTime)
+
+if (timec1 and timec2)
+    strategy.entry("Buy", strategy.long, limit=Kauf)
+    strategy.exit("Take Profit", "Buy", limit=Kauf * 1.01)
+
+if (strategy.position_size > 0 and (close - strategy.position_avg_price) <= AnpassungTP)
+    strategy.exit("Adjust Take Profit", "Buy", limit=Kauf)
+
+if (strategy.position_size > 0 and dayOfWeek == dayofweek.friday and time == endTime)
+    strategy.close("Buy")
+
+strategy.exit("Stop Loss", "Buy", stop=close * 0.99)
