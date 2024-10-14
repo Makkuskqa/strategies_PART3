@@ -88,4 +88,6 @@ df_with_signals = custom_trading_strategy(df)
 # Show the dataframe with buy/sell signals
 print(df_with_signals[['date', 'open', 'high', 'low', 'close', 'buy', 'sell']])
 
-df_with_signals.to_csv('NDX5years_signals.csv')
+import os
+path = os.path.dirname(os.path.abspath(__file__))
+df_with_signals.to_csv(f'{path}/NDX5years_signals.csv')
